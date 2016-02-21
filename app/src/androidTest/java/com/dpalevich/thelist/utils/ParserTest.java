@@ -20,6 +20,8 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.test.InstrumentationTestCase;
 
+import com.dpalevich.thelist.model.UniqueDateInfo;
+
 import java.io.IOException;
 import java.text.ParseException;
 
@@ -35,12 +37,14 @@ public class ParserTest extends InstrumentationTestCase {
         public final int length;
         public final int firstEventIndex;
         public final int eventCount;
+        public final String uniqueDateInfoFilename;
 
-        public ParserFileEntry(String testFileName, int length, int firstEventIndex, int eventCount) {
+        public ParserFileEntry(String testFileName, int length, int firstEventIndex, int eventCount, String uniqueDateInfoFilename) {
             this.testFileName = testFileName;
             this.length = length;
             this.firstEventIndex = firstEventIndex;
             this.eventCount = eventCount;
+            this.uniqueDateInfoFilename = uniqueDateInfoFilename;
         }
     }
 
@@ -54,7 +58,7 @@ public class ParserTest extends InstrumentationTestCase {
     }
 
     private ParserFileEntry[] TEST_DATA = new ParserFileEntry[] {
-        new ParserFileEntry("test_file_001.txt", 111429, 0x1f2, 979)
+        new ParserFileEntry("test_file_001.txt", 111429, 0x1f2, 979, "unique_date_info_001.txt")
     };
 
     public void testParsing() {
@@ -69,13 +73,57 @@ public class ParserTest extends InstrumentationTestCase {
                 parser.parse(data);
                 assertEquals(entry.firstEventIndex, parser.mFirstEventIndex);
                 assertEquals(entry.eventCount, parser.mEventList.size());
-            } catch (IOException e) {
-                e.printStackTrace();
-                assertNull(e);
-            } catch (ParseException e) {
+                verifyUniqueDateInfo(context, parser, entry.uniqueDateInfoFilename);
+            } catch (IOException | ParseException e) {
                 e.printStackTrace();
                 assertNull(e);
             }
         }
     }
+
+    /**
+     * Verify parser dates against validation file
+     *
+     * @param context The test context
+     * @param parser The parser
+     * @param validationFileName The validation file name
+     */
+    private void verifyUniqueDateInfo(@NonNull Context context, @NonNull TestParser parser, @NonNull String validationFileName) {
+        try {
+            String[] lines = TestUtils.getTestFileLines(context, validationFileName);
+            assertNotNull(lines);
+            assertEquals(lines.length, parser.mDates.size());
+
+            for (int i=0; i<lines.length; i++) {
+                String[] split = lines[i].split(",");
+                assertEquals(3, split.length);
+                // strip quotes
+                String dateString = split[0].substring(1, split[0].length() - 1);
+                int index = Integer.parseInt(split[1]);
+                int count = Integer.parseInt(split[2]);
+                UniqueDateInfo info = new UniqueDateInfo(dateString, index, count);
+                assertEquals(info, parser.mDates.get(i));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            assertNull(e);
+        }
+    }
+
+    /*
+    private void dumpDateInfo(TestParser parser) {
+        StringBuilder sb = new StringBuilder();
+        for (UniqueDateInfo info : parser.mDates) {
+            sb.setLength(0);
+            sb.append('\"');
+            sb.append(info.dateString);
+            sb.append('\"');
+            sb.append(',');
+            sb.append(info.firstEventIndex);
+            sb.append(',');
+            sb.append(info.eventCount);
+            System.out.println(sb.toString());
+        }
+    }
+    */
 }
