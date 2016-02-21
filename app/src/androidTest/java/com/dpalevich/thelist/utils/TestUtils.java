@@ -72,4 +72,17 @@ public class TestUtils {
             }
         }
     }
+
+    /**
+     * Reads a test text file from the assets directory and returns a String array of the text lines
+     *
+     * @param context The test context
+     * @param testFileName The name of the file in the assets directory
+     * @return A String array containing the lines of text of the test file
+     * @throws IOException
+     */
+    public static String[] getTestFileLines(@NonNull Context context, @NonNull String testFileName) throws IOException {
+        String data = getTestFileData(context, testFileName);
+        return data.split("\n");
+    }
 }
