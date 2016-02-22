@@ -74,6 +74,7 @@ public class Parser {
         int dateEventCount = 0;
         int dateIndex = 0;
         String dateString = null;
+        boolean dateStringEndsWithDay = false;
 
         do {
             int lineEnd = eventEnd = data.indexOf(EOL, eventStart);
@@ -98,9 +99,20 @@ public class Parser {
             } else if (!event.startsWith(dateString)) {
                 dateChange = true;
             } else {
-                // this attempts to handle the case where date changed but still started with the
-                // string of the previous date, such as going from "may 27/28" to "may 27/28/29".
-                dateChange = ' ' != event.charAt(dateString.length());
+                int dateStringLength = dateString.length();
+                if (' ' != event.charAt(dateStringLength)) {
+                    // this attempts to handle the case where date changed but still started with the
+                    // string of the previous date, such as going from "may 27/28" to "may 27/28/29".
+                    dateChange = true;
+                } else if (!dateStringEndsWithDay) {
+                    // This attempts to handle the case where we go from the day name being mistakenly
+                    // omitted to the case where it is now present again, such as going from
+                    // "feb 28" to "feb 28 sun"
+                    int nextWordIdx = dateStringLength + 1;
+                    dateChange = DAYS.contains(event.substring(nextWordIdx, nextWordIdx + 3));
+                } else {
+                    dateChange = false;
+                }
             }
             if (dateChange) {
                 String prevDateString = dateString;
@@ -117,8 +129,10 @@ public class Parser {
                 while (' ' != event.charAt(i)) i++;
                 if (6 == i && DAYS.contains(event.substring(7, 10))) {
                     dateString = event.substring(0, 10);
+                    dateStringEndsWithDay = true;
                 } else {
                     dateString = event.substring(0, i);
+                    dateStringEndsWithDay = false;
                     if (dateString.endsWith("/")) {
                         //mar 31/ apr 1
                         while (' ' == event.charAt(i)) i++;
