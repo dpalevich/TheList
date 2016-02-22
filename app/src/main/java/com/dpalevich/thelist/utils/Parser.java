@@ -92,7 +92,17 @@ public class Parser {
             String event = data.substring(eventStart, eventEnd);
             mEventList.add(event);
 
-            if (null == dateString || !event.startsWith(dateString)) {
+            boolean dateChange;
+            if (null == dateString) {
+                dateChange = true;
+            } else if (!event.startsWith(dateString)) {
+                dateChange = true;
+            } else {
+                // this attempts to handle the case where date changed but still started with the
+                // string of the previous date, such as going from "may 27/28" to "may 27/28/29".
+                dateChange = ' ' != event.charAt(dateString.length());
+            }
+            if (dateChange) {
                 String prevDateString = dateString;
 
                 //date string examples
