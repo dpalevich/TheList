@@ -18,6 +18,7 @@ package com.dpalevich.thelist.utils;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
+import android.text.TextUtils;
 
 import com.dpalevich.thelist.model.UniqueDateInfo;
 
@@ -75,6 +76,7 @@ public class Parser {
         int dateIndex = 0;
         String dateString = null;
         boolean dateStringEndsWithDay = false;
+        ArrayList<String> bands = new ArrayList<>();
 
         do {
             int lineEnd = eventEnd = data.indexOf(EOL, eventStart);
@@ -193,5 +195,105 @@ public class Parser {
         }
 
         throw new ParseException("Failed to find first event", length);
+    }
+
+    @VisibleForTesting
+    protected void getBands(@NonNull String event, @NonNull String date, @NonNull ArrayList<String> bands) throws ParseException {
+        bands.clear();
+        int length = event.length();
+        int idx = date.length() + 1;
+
+        while (' ' == event.charAt(idx)) idx++;
+
+        int name_start_idx = idx;
+        boolean past_first_line = false;
+        boolean reachedLocation = false;
+        boolean searchForNameStart = false;
+        boolean isComma = false;
+        boolean inBrackets = false;
+
+        while (idx < length) {
+            char c = event.charAt(idx);
+            boolean isEOL = '\n' == c;
+
+            // special case, where comma is at the end of the line
+            if (isComma && isEOL) {
+                isComma = false;
+                idx++;
+                continue;
+            }
+
+            // Need to not treat commas as separators if within brackets
+            if (!inBrackets) {
+                inBrackets = '(' == c;
+            } else {
+                inBrackets = ')' != c;
+            }
+            isComma = !inBrackets && ',' == c;
+
+            boolean isEndOfBandName = isComma || isEOL;
+
+            if (!isEndOfBandName && !past_first_line) {
+                if (event.regionMatches(idx, " at ", 0, 4) && !event.contains("\n")) {
+                    // single line, already at location
+                    reachedLocation = isEndOfBandName = true;
+                }
+            }
+
+            if (isEndOfBandName) {
+                if (name_start_idx == idx) {
+                    throw new ParseException("Found name that starts with delimeter", idx);
+                }
+                String name = event.substring(name_start_idx, idx);
+                if (name.endsWith(")")) {
+                    int open_idx = name.indexOf('(');
+                    if (open_idx > 1) {
+                        int name_end_idx = open_idx - 1;
+                        while (' ' == name.charAt(name_end_idx)) name_end_idx--;
+                        name = name.substring(0, name_end_idx + 1);
+                    }
+                }
+                int at_idx = name.indexOf(" at ");
+                if (at_idx > 0 && -1 == event.indexOf(EOL, name_start_idx)) {
+                    // TODO FIXME detect false positives of location
+                    name = name.substring(0, at_idx);
+                    reachedLocation = true;
+                }
+                bands.add(name);
+                searchForNameStart = true;
+                inBrackets = false;
+                past_first_line |= isEOL;
+                if (isEOL && idx < length - 1) {
+                    if (event.regionMatches(idx, "\n       at ", 0, 11)) {
+                        return;
+                    }
+                    if (event.regionMatches(idx, "\n       a/a", 0, 11)) {
+                        // Handle case like this:
+                        // mar 28 mon Underoath (Tampa, FL), Caspian at the Warfield, S.F.
+                        // a/a $28/$30 6:30pm/7:30pm # *** @ (was at Regency Ballroom)
+
+                        // recurse warning, the location was probably on the previous line and was
+                        // incorrectly interpreted as bands. Remove this line and do it again.
+
+                        // But only do this if previous line did not contain " at "
+                        int i = event.indexOf(" at ");
+                        if (i > 7 && i < idx) {
+                            event = event.substring(0, idx);
+                            getBands(event, date, bands);
+                            return;
+                        }
+                    }
+                }
+            } else if (searchForNameStart) {
+                if (' ' != c) {
+                    searchForNameStart = false;
+                    name_start_idx = idx;
+                }
+            }
+            if (reachedLocation) {
+                return;
+            }
+            idx++;
+        }
     }
 }
