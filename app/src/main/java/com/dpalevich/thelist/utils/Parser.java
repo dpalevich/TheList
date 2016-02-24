@@ -267,7 +267,7 @@ public class Parser {
                     if (event.regionMatches(idx, "\n       at ", 0, 11)) {
                         return;
                     }
-                    if (event.regionMatches(idx, "\n       a/a", 0, 11)) {
+                    if (event.regionMatches(idx, "\n       a/a", 0, 11) || event.regionMatches(idx, "\n       21+", 0, 11)) {
                         // Handle case like this:
                         // mar 28 mon Underoath (Tampa, FL), Caspian at the Warfield, S.F.
                         // a/a $28/$30 6:30pm/7:30pm # *** @ (was at Regency Ballroom)
