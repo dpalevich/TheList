@@ -75,7 +75,7 @@ Wild Ones|Palehound|Two Sheds|False Priest
 Heartwatch|Rin Tin Tiger|Banta|Future Shapes
 Ringo Deathstarr|Bed|Plush|Crush
 Mitski|Phoebe Bridgers|Jay Som|Monica Mody
-Kneedelus (two shows) at SF Jazz Center|201 Franklin Street|S.F.
+Kneedelus
 Ala Vit|mc Radio Active|Dave Shul|Bliss Gould|Bob Crawford|Jay Lane
 Bladesnake|Down Dirty Shake|Talk Of shamans
 Passafire
@@ -90,7 +90,7 @@ Julien Baker|Gracie And Rachel|Kacey Johansign|Debbie Neigher
 Day Wave|Harriet|Hot Flash Heat Wave|Dot Vom
 Jovanger
 The Thermals|Cruel Summer|Partybaby
-Kamasi Washington|dj Turf-Yard|Make It Funky (10:30pm show) at the Independent|S.F.
+Kamasi Washington|dj Turf-Yard|Make It Funky (10:30pm show)
 AJ Froman|The Other Band On Earth|Asshole Aquarium
 Bill Callahan|Guy Blakeslee|Peacers
 The Pine Box Boys|Trainwreck Riders|Nate Jones & The Sloe Sippers
@@ -135,7 +135,7 @@ The Dwarves|F.U.X.|The Highway Murderers|The Has Beens|Decent Criminal|Elektrix
 King's X|Kings Of Spades|Enchant
 David Lindley
 The Royal Jelly|Live Manikins|Hans! And The Hot Mess
-Three Dog Night at Thunder Valley Casino|1200 Athens Ave.|Lincoln
+Three Dog Night
 Vance Joy|Elle King|Jamie Lawson
 ALO|Stu Allen & Mars Hotel|Mike Love
 Eric Prydz
