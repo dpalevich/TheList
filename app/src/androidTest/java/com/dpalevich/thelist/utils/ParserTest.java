@@ -200,6 +200,5 @@ public class ParserTest extends InstrumentationTestCase {
         }
         sb.deleteCharAt(sb.length() - 1);
         System.out.println(sb.toString());
-    }
     */
 }
