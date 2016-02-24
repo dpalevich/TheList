@@ -18,7 +18,6 @@ package com.dpalevich.thelist.utils;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
-import android.text.TextUtils;
 
 import com.dpalevich.thelist.model.UniqueDateInfo;
 
@@ -76,7 +75,6 @@ public class Parser {
         int dateIndex = 0;
         String dateString = null;
         boolean dateStringEndsWithDay = false;
-        ArrayList<String> bands = new ArrayList<>();
 
         do {
             int lineEnd = eventEnd = data.indexOf(EOL, eventStart);
@@ -234,8 +232,8 @@ public class Parser {
             boolean isEndOfBandName = isComma || isEOL;
 
             if (!isEndOfBandName && !past_first_line) {
-                if (event.regionMatches(idx, " at ", 0, 4) && !event.contains("\n")) {
-                    // single line, already at location
+                if (event.regionMatches(idx, " at ", 0, 4) && (-1 != event.indexOf(EOL, idx) || -1 == event.indexOf(EOL))) {
+                    // on the last line (or only one line) and already at location
                     reachedLocation = isEndOfBandName = true;
                 }
             }
