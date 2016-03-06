@@ -24,8 +24,10 @@ import com.dpalevich.thelist.model.UniqueDateInfo;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.TreeMap;
 
 /**
  * Parser class for the list data
@@ -44,6 +46,11 @@ public class Parser {
     protected ArrayList<String> mEventList = new ArrayList<>();
     @VisibleForTesting
     protected ArrayList<UniqueDateInfo> mDates = new ArrayList<>();
+
+    @VisibleForTesting
+    protected TreeMap<String, Object> mBandsToEventsMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+    @VisibleForTesting
+    protected HashSet<Integer> mBadDatesIndices = new HashSet<>();
 
     public Parser() {
         if (null != MONTHS) {
@@ -366,5 +373,49 @@ public class Parser {
             return eventMetadata;
         }
         return null;
+    }
+
+    /**
+     * Populate mBandsToEventsMap. The key to each entry is the band name, the value is either an
+     * Integer, or a primitive int array containing each event index (into mDates) that is a hit for
+     * the band. We use manual array growth here as the sizes of the arrays are small, and most bands
+     * only actually have one event. The breakdown for the first test file is this: 1820 bands have
+     * only 1 event, 210 bands have 2 events, 32 bands have 3 events. 8 bands have 4 events, and 2
+     * bands have 5 events.
+     */
+    @VisibleForTesting
+    protected void getDatesPerBand() {
+        ArrayList<String> bands = new ArrayList<>();
+        for (UniqueDateInfo info : mDates) {
+            int eventIndexBase = info.firstEventIndex;
+            int count = info.eventCount;
+            String date = info.dateString;
+            for (int i=0; i<count; i++) {
+                int eventIndex = eventIndexBase + i;
+                try {
+                    getBands(mEventList.get(eventIndex), date, bands);
+                } catch (ParseException e) {
+                    mBadDatesIndices.add(eventIndex);
+                    continue;
+                }
+                for (String band : bands) {
+                    Object o = mBandsToEventsMap.get(band);
+                    if (null == o) {
+                        mBandsToEventsMap.put(band, eventIndex);
+                    } else if (o instanceof Integer) {
+                        int[] dates = new int[2];
+                        dates[0] = (int) o;
+                        dates[1] = eventIndex;
+                        mBandsToEventsMap.put(band, dates);
+                    } else {
+                        int[] dates = (int[]) o;
+                        int old_len = dates.length;
+                        int[] new_dates = Arrays.copyOf(dates, old_len + 1);
+                        new_dates[old_len] = eventIndex;
+                        mBandsToEventsMap.put(band, new_dates);
+                    }
+                }
+            }
+        }
     }
 }
