@@ -262,23 +262,32 @@ public class Parser {
                 inBrackets = false;
                 past_first_line |= isEOL;
                 if (isEOL && idx < length - 1) {
-                    if (event.regionMatches(idx, "\n       at ", 0, 11)) {
-                        return;
-                    }
-                    if (event.regionMatches(idx, "\n       a/a", 0, 11) || event.regionMatches(idx, "\n       21+", 0, 11)) {
-                        // Handle case like this:
-                        // mar 28 mon Underoath (Tampa, FL), Caspian at the Warfield, S.F.
-                        // a/a $28/$30 6:30pm/7:30pm # *** @ (was at Regency Ballroom)
-
-                        // recurse warning, the location was probably on the previous line and was
-                        // incorrectly interpreted as bands. Remove this line and do it again.
-
-                        // But only do this if previous line did not contain " at "
-                        int i = event.indexOf(" at ");
-                        if (i > 7 && i < idx) {
-                            event = event.substring(0, idx);
-                            getBands(event, date, bands);
+                    if (event.regionMatches(idx, "\n       ", 0, 8)) {
+                        idx += 8;
+                        while (' ' == event.charAt(idx)) {
+                            idx++;
+                            if (idx == length) {
+                                break;
+                            }
+                        }
+                        if (event.regionMatches(idx, "at ", 0, 3)) {
                             return;
+                        }
+                        if (event.regionMatches(idx, "a/a", 0, 3) || event.regionMatches(idx, "21+", 0, 3)) {
+                            // Handle case like this:
+                            // mar 28 mon Underoath (Tampa, FL), Caspian at the Warfield, S.F.
+                            // a/a $28/$30 6:30pm/7:30pm # *** @ (was at Regency Ballroom)
+
+                            // recurse warning, the location was probably on the previous line and was
+                            // incorrectly interpreted as bands. Remove this line and do it again.
+
+                            // But only do this if previous line did not contain " at "
+                            int i = event.indexOf(" at ");
+                            if (i > 7 && i < idx) {
+                                event = event.substring(0, idx);
+                                getBands(event, date, bands);
+                                return;
+                            }
                         }
                     }
                 }
