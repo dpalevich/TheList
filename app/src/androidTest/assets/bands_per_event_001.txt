@@ -40,7 +40,7 @@ Fleshgod Apocalypse|Carach Angren|Abigail Williams|dj Rob Metal
 Seabound|Nite|Suicide Queen|dj Decay
 Americano Social Club
 Magic Trick|Grace Sings Sludge|The She's|Emotional
-Weed Plus Beer|Toyota|Miss Lightning|Jesus Dude Mom|Glndlfry|host Nicki Jizz
+Weed Plus Beer|Toyota|Miss Lightning|Jesus Dude Mom|Glndlfry|Nicki Jizz
 Striking Matches|Scott Mulvahill
 Desent Criminal|Signal Man|He Who Cannot Be Named|Screaming Minis
 Scarface
@@ -101,7 +101,7 @@ Betty's Love Child|Firewalkwithme
 Banana Gun
 Vokab Kompany
 King's X|Kings Of Spades
-cancelled:  R. City
+R. City
 La Noche Oskura|Matamoska|The Skunkadelics|Corazon Salvje|Runaway Planet
 Arrington de Dionyso|Dire Wolves
 Parquet Courts|Chris Cohen|Emotional|The World
@@ -143,7 +143,7 @@ Set Your Goals|The American Scene|Light Brigade
 Badr Vogu|Hallucinator|Leucrota|Pattern Breaker
 John Rybak + Friends
 Cayucas
-Jel|Bluezr|Mieksneak|NorthernDraw|Daoud|dj Mark Aubert|Muzae Sesay|host The Zap Tap & Joe Mousepad
+Jel|Bluezr|Mieksneak|NorthernDraw|Daoud|dj Mark Aubert|Muzae Sesay|The Zap Tap & Joe Mousepad
 Daley
 Kevin Seconds|Steve Soto|Russ Rankin
 Lake Street Dive|The Suffers
@@ -188,7 +188,7 @@ Diiv
 Sam Flax|Friendless Summer|Cole Lodge|Emotional
 dj Daniel Miller
 The Chieftins
-postponed:  Rihanna|Travis Scott|The Weeknd
+Rihanna|Travis Scott|The Weeknd
 Strawberry Girls|Covet|Belle Noire
 Megadeth|Suicidal Tendencies|Children Of Bodom|Havok
 Basia Bulat|The Weather Station
@@ -211,7 +211,7 @@ From Indian Lakes|Soren Bryce|Docks
 Wavves|Best Coast|Cherry Glazzer
 Gleen Huges|Joanne Shaw Taylor|Jared James Nichols
 Rebelution|Protoje
-cancelled:  Editors
+Editors
 Guantanamo Baywatch|The Gooch Palms|Meat Market
 Papadosio|Bluetech
 Charlie Puth|Phoebe Ryan|Sophie Beem
@@ -532,7 +532,7 @@ Rob Crow's Gloomy Place|Vertical Scratchers|Owl Paws
 Howardian|Golden Drugs|Teenage Chain
 Trecelence|Cataclysmic Assault|Discordia|The Royal Order|Abscission
 Yonder Mountain String Band|Polecat
-cancelled:  Complete|Octagrape|Aquarian Blood
+Complete|Octagrape|Aquarian Blood
 Weedeater|Author & Punisher|Today Is The Day|Lord Dying
 Trombone Shorty|Orleans Avenue
 Polica|Clara-Nova
@@ -917,9 +917,9 @@ Spraynard|Sundials|Jabber
 The Murderburgers|The Hot Toddies|The Atom Age
 Jeff Rosenstock|Antarctico Vespucci|Shinobu|Chotto Ghetto
 Janelle Monae
-The Trashwomen|Mummies|Real Kids|The Lyres|The Intelligence|Thee Oh Sees|Okmoniks|Angry Samoans|Amplified Heat|Psycotic Pineapple|Young Fresh Fellows|host John Waters
+The Trashwomen|Mummies|Real Kids|The Lyres|The Intelligence|Thee Oh Sees|Okmoniks|Angry Samoans|Amplified Heat|Psycotic Pineapple|Young Fresh Fellows|John Waters
 Broun Fellinis
-King Khan & The Shrines|Flamin' Groovies|Shannon & The Clams|Terry & Louie|Seth Bogart|The Spits|Buck Biloxi|Giorgio Murderer|Soda Boys|Death Valley Girls|The Dwarves|Fadeaways|host John Waters
+King Khan & The Shrines|Flamin' Groovies|Shannon & The Clams|Terry & Louie|Seth Bogart|The Spits|Buck Biloxi|Giorgio Murderer|Soda Boys|Death Valley Girls|The Dwarves|Fadeaways|John Waters
 Foreigner
 Rascal Flatts|Kelsea Ballerini|Chris Lane
 Brit Floyd
