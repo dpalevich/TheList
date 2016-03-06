@@ -23,6 +23,7 @@ import com.dpalevich.thelist.model.UniqueDateInfo;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 
 /**
@@ -33,8 +34,10 @@ import java.util.HashSet;
 public class Parser {
 
     private static final char EOL = 0x0a;
-    private HashSet<String> MONTHS;
-    private HashSet<String> DAYS;
+    private static HashSet<String> MONTHS;
+    private static HashSet<String> DAYS;
+    private static HashMap<String, String> MISSPELLED_DAYS;
+    private StringBuilder mSb = new StringBuilder();
 
     @VisibleForTesting
     protected ArrayList<String> mEventList = new ArrayList<>();
@@ -42,6 +45,9 @@ public class Parser {
     protected ArrayList<UniqueDateInfo> mDates = new ArrayList<>();
 
     public Parser() {
+        if (null != MONTHS) {
+            return;
+        }
         MONTHS = new HashSet<>(12);
         MONTHS.add("jan");
         MONTHS.add("feb");
@@ -64,6 +70,9 @@ public class Parser {
         DAYS.add("thr");
         DAYS.add("fri");
         DAYS.add("sat");
+
+        MISSPELLED_DAYS = new HashMap<>();
+        MISSPELLED_DAYS.put("fir", "fri");
     }
 
     public void parse(@NonNull String data) throws ParseException {
@@ -98,6 +107,12 @@ public class Parser {
                 dateChange = true;
             } else if (!event.startsWith(dateString)) {
                 dateChange = true;
+                if (dateStringEndsWithDay) {
+                    int length = dateString.length();
+                    if (event.regionMatches(0, dateString, 0, length - 3)) {
+                        dateChange = !MISSPELLED_DAYS.containsKey(event.substring(length - 3, length));
+                    }
+                }
             } else {
                 int dateStringLength = dateString.length();
                 if (' ' != event.charAt(dateStringLength)) {
@@ -127,7 +142,17 @@ public class Parser {
                 //find start of day (or range)
                 while (' ' == event.charAt(i)) i++;
                 while (' ' != event.charAt(i)) i++;
-                if (6 == i && DAYS.contains(event.substring(7, 10))) {
+                String day = event.substring(7, 10);
+                String correctedDay = MISSPELLED_DAYS.get(day);
+                if (null != correctedDay) {
+                    day = correctedDay;
+                    mSb.setLength(0);
+                    mSb.append(event, 0, 7);
+                    mSb.append(day);
+                    mSb.append(event, 10, event.length());
+                    event = mSb.toString();
+                }
+                if (6 == i && DAYS.contains(day)) {
                     dateString = event.substring(0, 10);
                     dateStringEndsWithDay = true;
                 } else {
