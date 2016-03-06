@@ -268,8 +268,8 @@ public class Parser {
                 inBrackets = false;
                 past_first_line |= isEOL;
                 if (isEOL && idx < length - 1) {
-                    if (event.regionMatches(idx, "\n       ", 0, 8)) {
-                        idx += 8;
+                    if (event.regionMatches(idx, "\n      ", 0, 7)) {
+                        idx += 7;
                         while (' ' == event.charAt(idx)) {
                             idx++;
                             if (idx == length) {
