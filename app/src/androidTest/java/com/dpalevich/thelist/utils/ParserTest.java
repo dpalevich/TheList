@@ -74,6 +74,7 @@ public class ParserTest extends InstrumentationTestCase {
 
                 TestParser parser = new TestParser();
                 parser.parse(data);
+                //dumpDateInfo(parser);
                 assertEquals(entry.firstEventIndex, parser.mFirstEventIndex);
                 assertEquals(entry.eventCount, parser.mEventList.size());
                 verifyUniqueDateInfo(context, parser, entry.uniqueDateInfoFilename);
