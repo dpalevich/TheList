@@ -255,6 +255,12 @@ public class Parser {
                 if (at_idx > 0 && -1 == event.indexOf(EOL, name_start_idx)) {
                     // TODO FIXME detect false positives of location
                     name = name.substring(0, at_idx);
+                    if (')' == name.charAt(at_idx - 1)) {
+                        int start_parenthesis = name.indexOf(" (");
+                        if (start_parenthesis > 0) {
+                            name = name.substring(0, start_parenthesis);
+                        }
+                    }
                     reachedLocation = true;
                 }
                 bands.add(name);
