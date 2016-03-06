@@ -19,6 +19,7 @@ package com.dpalevich.thelist.utils;
 import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
 
+import com.dpalevich.thelist.model.EventMetadata;
 import com.dpalevich.thelist.model.UniqueDateInfo;
 
 import java.text.ParseException;
@@ -333,5 +334,37 @@ public class Parser {
             }
             idx++;
         }
+    }
+
+    @VisibleForTesting
+    protected EventMetadata fixupBands(@NonNull ArrayList<String> bands) {
+        int count = bands.size();
+        String metaData = null;
+
+        EventMetadata.Status status = null;
+
+        for (int i=0; i<count; i++) {
+            String band = bands.get(i);
+            if(0 == i) {
+                if (band.regionMatches(0, "cancelled: ", 0, 11)) {
+                    status = EventMetadata.Status.CANCELLED;
+                } else if (band.regionMatches(0, "postponed: ", 0, 11)) {
+                    status = EventMetadata.Status.POSTPONED;
+                }
+                if (null != status) {
+                    band = band.substring(11).trim();
+                    bands.set(0, band);
+                }
+            }
+            if (band.regionMatches(0, "host ", 0, 5)) {
+                bands.set(i, band.substring(5).trim());
+            }
+        }
+        if (null != status) {
+            EventMetadata eventMetadata = new EventMetadata();
+            eventMetadata.status = status;
+            return eventMetadata;
+        }
+        return null;
     }
 }

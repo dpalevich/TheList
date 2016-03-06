@@ -136,6 +136,7 @@ public class ParserTest extends InstrumentationTestCase {
                 for (int i=0; i<info.eventCount; i++) {
                     try {
                         parser.getBands(parser.mEventList.get(info.firstEventIndex + i), info.dateString, bands);
+                        parser.fixupBands(bands);
                         sb.setLength(0);
                         for (String band : bands) {
                             sb.append(band);
