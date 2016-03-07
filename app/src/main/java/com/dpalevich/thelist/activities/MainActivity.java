@@ -1,5 +1,7 @@
 package com.dpalevich.thelist.activities;
 
+import android.app.Application;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -23,6 +25,8 @@ import com.dpalevich.thelist.fragments.BandsFragment;
 import com.dpalevich.thelist.fragments.BaseFragment;
 import com.dpalevich.thelist.fragments.CalendarFragment;
 import com.dpalevich.thelist.fragments.FavoritesFragment;
+import com.dpalevich.thelist.model.Model;
+import com.dpalevich.thelist.utils.TempMock;
 
 import java.util.List;
 
@@ -61,6 +65,8 @@ public class MainActivity extends AppCompatActivity
             ft.add(R.id.content_container, bandsFragment, bandsFragment.getClass().getName());
             ft.commit();
         }
+
+        tempMock();
     }
 
     @Override
@@ -167,6 +173,12 @@ public class MainActivity extends AppCompatActivity
             } else {
                 System.out.println(fragment.getClass().getName() + ", added=" + fragment.isAdded() + ", visible=" + fragment.isVisible());
             }
+        }
+    }
+
+    private void tempMock() {
+        if (null == Model.sCurrentModel) {
+            new TempMock(this);
         }
     }
 }
