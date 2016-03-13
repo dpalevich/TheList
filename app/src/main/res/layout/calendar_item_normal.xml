@@ -11,4 +11,12 @@
         android:padding="10dp"
         android:textColor="#FF000000"
         android:textSize="18sp"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/date"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:background="@color/dark_gray"/>
 </RelativeLayout>
