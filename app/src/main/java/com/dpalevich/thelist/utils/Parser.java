@@ -394,6 +394,7 @@ public class Parser {
                 int eventIndex = eventIndexBase + i;
                 try {
                     getBands(mEventList.get(eventIndex), date, bands);
+                    fixupBands(bands);
                 } catch (ParseException e) {
                     mBadDatesIndices.add(eventIndex);
                     continue;

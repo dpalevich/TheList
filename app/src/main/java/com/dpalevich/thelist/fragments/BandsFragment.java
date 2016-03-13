@@ -33,6 +33,7 @@ import android.widget.TextView;
 
 import com.dpalevich.thelist.R;
 import com.dpalevich.thelist.model.Model;
+import com.dpalevich.thelist.widgets.SimpleDividerItemDecoration;
 
 import java.util.Map;
 import java.util.Set;
@@ -114,6 +115,7 @@ public class BandsFragment extends BaseFragment {
 
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(context));
+        mRecyclerView.addItemDecoration(new SimpleDividerItemDecoration(context));
         mAdapter.setModel(Model.sCurrentModel);
         mRecyclerView.setAdapter(mAdapter);
 
