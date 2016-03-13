@@ -16,6 +16,9 @@
 
 package com.dpalevich.thelist.model;
 
+import android.support.annotation.NonNull;
+import android.util.SparseArray;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -39,6 +42,7 @@ public class Model {
     public final TreeMap<String, Object> bandsToEventsMap;
     public final ArrayList<String> bandsSorted;
     public final HashSet<Integer> badDatesIndices;
+    public final SparseArray<String> convertedEvents;
 
     public Model(ArrayList<String> eventList, ArrayList<UniqueDateInfo> dates, TreeMap<String, Object> bandsToEventsMap, HashSet<Integer> badDatesIndices) {
         this.eventList = eventList;
@@ -47,5 +51,12 @@ public class Model {
         this.badDatesIndices = badDatesIndices;
         bandsSorted = new ArrayList<>(bandsToEventsMap.size());
         bandsSorted.addAll(bandsToEventsMap.keySet());
+        convertedEvents = new SparseArray<>();
+    }
+
+    public String convertEvent(@NonNull String dateString, int index) {
+        String converted = eventList.get(index).substring(dateString.length()).trim().replaceAll("\\s+", " ");
+        convertedEvents.put(index, converted);
+        return converted;
     }
 }
