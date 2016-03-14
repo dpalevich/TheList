@@ -26,6 +26,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -100,6 +101,8 @@ public class BandsFragment extends BaseFragment {
         }
     };
     private IntentFilter mFilter = new IntentFilter(Model.INTENT_ACTION_MODEL_AVAILABLE);
+    private LinearLayoutManager mLayoutManager;
+    private Toolbar mToolbar;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -113,11 +116,20 @@ public class BandsFragment extends BaseFragment {
         View view = inflater.inflate(R.layout.fragment_bands, container, false);
         Context context = container.getContext();
 
+        mToolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
+
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(context));
+        mLayoutManager = new LinearLayoutManager(context);
+        mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.addItemDecoration(new SimpleDividerItemDecoration(context));
         mAdapter.setModel(Model.sCurrentModel);
         mRecyclerView.setAdapter(mAdapter);
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                updateToolbar(false);
+            }
+        });
 
         return view;
     }
@@ -134,6 +146,26 @@ public class BandsFragment extends BaseFragment {
         LocalBroadcastManager manager = LocalBroadcastManager.getInstance(getContext());
         manager.registerReceiver(mBroadcastReceiver, mFilter);
         updateModel();
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        if (!hidden) {
+            updateToolbar(true);
+        }
+    }
+
+    private void updateToolbar(boolean force) {
+        int position = mLayoutManager.findFirstVisibleItemPosition();
+        if (position < 0) {
+            return;
+        }
+        String band = Model.sCurrentModel.bandsSorted.get(position);
+        CharSequence currentTitle = mToolbar.getTitle();
+        char c = Character.toUpperCase(band.charAt(0));
+        if (force || c != currentTitle.charAt(currentTitle.length() - 1)) {
+            mToolbar.setTitle("Bands - " + c);
+        }
     }
 
     private void updateModel() {
