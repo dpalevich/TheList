@@ -25,6 +25,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -96,7 +97,7 @@ public class CalendarFragment extends BaseFragment implements View.OnClickListen
         private Model mModel;
         private ArrayList<UniqueDateInfo> mUniqueDateInfo;
         private int mSize;
-        private ArrayList<Integer> mItems;
+        public ArrayList<Integer> mItems;
         private final View.OnClickListener mOnClickListener;
 
         DatesAdapter(View.OnClickListener onClickListener) {
@@ -194,6 +195,9 @@ public class CalendarFragment extends BaseFragment implements View.OnClickListen
         }
     };
     private IntentFilter mFilter = new IntentFilter(Model.INTENT_ACTION_MODEL_AVAILABLE);
+    private LinearLayoutManager mLayoutManager;
+    private Toolbar mToolbar;
+    private int mCurrentUniqueDateId = -1;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -207,10 +211,19 @@ public class CalendarFragment extends BaseFragment implements View.OnClickListen
         View view = inflater.inflate(R.layout.fragment_bands, container, false);
         Context context = container.getContext();
 
+        mToolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
+
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(context));
+        mLayoutManager = new LinearLayoutManager(context);
+        mRecyclerView.setLayoutManager(mLayoutManager);
         mAdapter.setModel(Model.sCurrentModel);
         mRecyclerView.setAdapter(mAdapter);
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                updateToolbar(false);
+            }
+        });
 
         return view;
     }
@@ -227,6 +240,26 @@ public class CalendarFragment extends BaseFragment implements View.OnClickListen
         LocalBroadcastManager manager = LocalBroadcastManager.getInstance(getContext());
         manager.registerReceiver(mBroadcastReceiver, mFilter);
         updateModel();
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        if (!hidden) {
+            updateToolbar(true);
+        }
+    }
+
+    private void updateToolbar(boolean force) {
+        int index = mLayoutManager.findFirstVisibleItemPosition();
+        if (index < 0) {
+            return;
+        }
+        int eventId = mAdapter.mItems.get(index) & ITEM_DATE_MASK;
+        if (force || eventId != mCurrentUniqueDateId) {
+            UniqueDateInfo info = mAdapter.mModel.dates.get(eventId >> ITEM_DATE_SHIFT);
+            mToolbar.setTitle(info.dateString);
+            mCurrentUniqueDateId = eventId;
+        }
     }
 
     @Override

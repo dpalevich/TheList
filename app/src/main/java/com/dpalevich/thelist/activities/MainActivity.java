@@ -1,7 +1,5 @@
 package com.dpalevich.thelist.activities;
 
-import android.app.Application;
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -136,22 +134,34 @@ public class MainActivity extends AppCompatActivity
         FragmentManager fm = getSupportFragmentManager();
 
         Fragment fragment;
-        //Fragment currentFragment = getCurrentFragment(fm);
 
         if (null != (fragment = fm.findFragmentByTag(nextFragmentClass.getName()))) {
-            if (fragment.isAdded() && fragment.isVisible()) {
-                System.out.println("Already current fragment");
+            if (fragment.isVisible()) {
                 return;
             }
         }
 
-        try {
-            fragment = nextFragmentClass.newInstance();
-        } catch (InstantiationException|IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
         FragmentTransaction ft = fm.beginTransaction();
-        ft.replace(R.id.content_container, fragment, fragment.getClass().getName());
+
+        // Hide any other fragments
+        List<Fragment> fragments = fm.getFragments();
+        for (Fragment f : fragments) {
+            if (null != f && f.isVisible() && nextFragmentClass != f.getClass()) {
+                ft.hide(f);
+            }
+        }
+
+        // If we already have the desired fragment, show it, otherwise, create and add it
+        if (null == fragment) {
+            try {
+                fragment = nextFragmentClass.newInstance();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+            ft.add(R.id.content_container, fragment, fragment.getClass().getName());
+        } else {
+            ft.show(fragment);
+        }
         ft.commit();
     }
 
